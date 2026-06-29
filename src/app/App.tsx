@@ -1,41 +1,71 @@
-import { useState } from "react";
-import { Onboarding } from "./components/Onboarding";
-import { Home } from "./components/Home";
-import { Mission } from "./components/Mission";
-import { Report } from "./components/Report";
-import { BottomNav, type Tab } from "./components/BottomNav";
+import { AnimatePresence, motion } from "motion/react";
+import { Toaster } from "./components/ui/sonner";
+import { AppProvider, useApp, Screen } from "./state/AppContext";
+import { PhoneFrame } from "./components/layout/PhoneFrame";
+import { BottomTabBar } from "./components/layout/BottomTabBar";
 
-type Screen = "onboarding" | "main" | "mission";
+import { SplashScreen } from "./components/screens/SplashScreen";
+import { OnboardingScreen } from "./components/screens/OnboardingScreen";
+import { LoginScreen } from "./components/screens/LoginScreen";
+import { ChildProfileScreen } from "./components/screens/ChildProfileScreen";
+import { HomeScreen } from "./components/screens/HomeScreen";
+import { RecordScreen } from "./components/screens/RecordScreen";
+import { AnalyzingScreen } from "./components/screens/AnalyzingScreen";
+import { ReportScreen } from "./components/screens/ReportScreen";
+import { CoachingScreen } from "./components/screens/CoachingScreen";
+import { LessonDetailScreen } from "./components/screens/LessonDetailScreen";
+import { ReportsScreen } from "./components/screens/ReportsScreen";
+import { MyPageScreen } from "./components/screens/MyPageScreen";
 
-export default function App() {
-  const [screen, setScreen] = useState<Screen>("onboarding");
-  const [tab, setTab] = useState<Tab>("home");
+// 탭바를 보여줄 화면들
+const TAB_VISIBLE: Screen[] = ["home", "coaching", "reports", "my"];
 
-  const renderMain = () => {
-    if (tab === "report") return <Report />;
-    if (tab === "guide" || tab === "settings")
-      return (
-        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center pb-28 px-6 text-center">
-          <p className="text-[#6B7280]">
-            {tab === "guide" ? "AI 가이드" : "설정"} 화면은 준비 중이에요.
-          </p>
-        </div>
-      );
-    return <Home onStartMission={() => setScreen("mission")} />;
-  };
+const screens: Record<Screen, React.ComponentType> = {
+  splash: SplashScreen,
+  onboarding: OnboardingScreen,
+  login: LoginScreen,
+  profile: ChildProfileScreen,
+  home: HomeScreen,
+  record: RecordScreen,
+  analyzing: AnalyzingScreen,
+  report: ReportScreen,
+  coaching: CoachingScreen,
+  lesson: LessonDetailScreen,
+  reports: ReportsScreen,
+  my: MyPageScreen,
+};
+
+function Router() {
+  const { state } = useApp();
+  const Current = screens[state.screen];
+  const showTabBar = TAB_VISIBLE.includes(state.screen);
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen relative">
-      {screen === "onboarding" && (
-        <Onboarding onComplete={() => setScreen("main")} />
-      )}
-      {screen === "main" && (
-        <>
-          {renderMain()}
-          <BottomNav active={tab} onChange={setTab} />
-        </>
-      )}
-      {screen === "mission" && <Mission onBack={() => setScreen("main")} />}
-    </div>
+    <PhoneFrame>
+      <div className="relative w-full h-full">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={state.screen}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.26, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <Current />
+          </motion.div>
+        </AnimatePresence>
+        {showTabBar && <BottomTabBar />}
+      </div>
+    </PhoneFrame>
+  );
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <Router />
+      <Toaster position="top-center" />
+    </AppProvider>
   );
 }
