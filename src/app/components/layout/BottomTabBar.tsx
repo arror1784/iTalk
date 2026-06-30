@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Home, BookOpen, BarChart3, User, Plus, Mic, Type, Image as ImageIcon, X } from "lucide-react";
+import { Home, BookOpen, Gamepad2, User, Plus, Mic, Type, Image as ImageIcon, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useApp, Tab, RecordMode } from "../../state/AppContext";
 
 const tabs: { key: Tab; label: string; icon: typeof Home }[] = [
   { key: "home", label: "홈", icon: Home },
   { key: "coaching", label: "코칭", icon: BookOpen },
-  { key: "reports", label: "리포트", icon: BarChart3 },
+  { key: "play", label: "놀이", icon: Gamepad2 },
   { key: "my", label: "마이", icon: User },
 ];
 

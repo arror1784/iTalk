@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { useApp } from "../../state/AppContext";
 import { Mascot } from "../common/Mascot";
 
-const steps = ["음성 인식", "감정 톤 분석", "코칭 생성"];
+const steps = ["음성 인식", "감정 톤 분석", "질문·표현 분석", "코칭 생성"];
 
 export function AnalyzingScreen() {
   const { go } = useApp();

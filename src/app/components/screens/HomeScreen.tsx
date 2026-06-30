@@ -1,10 +1,10 @@
 import { motion } from "motion/react";
-import { Heart, ChevronRight, Mic, Camera, Plus, Sparkles } from "lucide-react";
+import { Heart, ChevronRight, Mic, Camera, Plus, Sparkles, BookOpen } from "lucide-react";
 import { useApp } from "../../state/AppContext";
 import { AppHeader } from "../layout/AppHeader";
 import { FadeUp } from "../common/FadeUp";
 import { SectionCard } from "../common/SectionCard";
-import { user, weeklyStats, cheerMessage, coachMessage } from "../../state/dummyData";
+import { user, weeklyStats, cheerMessage, coachMessage, todayStory } from "../../state/dummyData";
 
 export function HomeScreen() {
   const { go } = useApp();
@@ -43,7 +43,7 @@ export function HomeScreen() {
             </div>
             <p style={{ fontSize: 15, lineHeight: 1.5 }}>{coachMessage}</p>
             <div className="flex items-center gap-1 mt-3 text-sky-dark" style={{ fontSize: 14, fontWeight: 600 }}>
-              확인 <ChevronRight size={16} />
+              코칭 보기 <ChevronRight size={16} />
             </div>
           </SectionCard>
         </FadeUp>
@@ -55,31 +55,68 @@ export function HomeScreen() {
           </p>
           <div className="grid grid-cols-3 gap-3">
             <StatCard big={`${weeklyStats.analyzeCount}회`} label="분석" sub="이번 주" />
-            <StatCard big={`${weeklyStats.score}점`} label="소통 점수" sub={`평균 +${weeklyStats.scoreDelta}`} accent />
-            <StatCard big={weeklyStats.empathy} label="공감지수" sub="유지 중" />
+            <StatCard
+              big={`${weeklyStats.score}점`}
+              label="소통 점수"
+              sub={`평균 +${weeklyStats.scoreDelta}`}
+              accent
+              onClick={() => go("reports")}
+            />
+            <StatCard big={`${weeklyStats.openQuestionPct}%`} label="열린 질문" sub="좋음" />
           </div>
+          <p className="text-gray text-center mt-2" style={{ fontSize: 12 }}>
+            소통 점수 카드를 누르면 성장 추이를 볼 수 있어요.
+          </p>
+        </FadeUp>
+
+        {/* 함께 놀기 */}
+        <FadeUp delay={0.32} className="mt-6">
+          <SectionCard variant="blue" onClick={() => go("play", "play")}>
+            <div className="flex items-center gap-3">
+              <span className="w-12 h-12 rounded-2xl bg-white/25 flex items-center justify-center" style={{ fontSize: 26 }}>
+                {todayStory.emoji}
+              </span>
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <BookOpen size={15} className="text-white" />
+                  <span style={{ fontSize: 13, fontWeight: 600 }} className="text-white/90">함께 놀기</span>
+                </div>
+                <p style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.4 }}>
+                  오늘의 동화 「{todayStory.title}」
+                </p>
+                <p style={{ fontSize: 13 }} className="text-white/85">
+                  읽고 끝말잇기까지
+                </p>
+              </div>
+              <ChevronRight size={22} className="text-white" />
+            </div>
+          </SectionCard>
         </FadeUp>
 
         {/* 빠른 기록 */}
-        <FadeUp delay={0.34} className="mt-6">
-          <SectionCard variant="blue" onClick={() => go("record")}>
+        <FadeUp delay={0.38} className="mt-4">
+          <SectionCard variant="white" onClick={() => go("record")}>
             <div className="flex items-center gap-3">
               <div className="flex gap-2">
-                <span className="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center">
-                  <Mic size={20} className="text-white" />
+                <span className="w-10 h-10 rounded-full bg-sky-light flex items-center justify-center">
+                  <Mic size={20} className="text-sky-dark" />
                 </span>
-                <span className="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center">
-                  <Camera size={20} className="text-white" />
+                <span className="w-10 h-10 rounded-full bg-sky-light flex items-center justify-center">
+                  <Camera size={20} className="text-sky-dark" />
                 </span>
               </div>
               <div className="flex-1">
-                <p style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.4 }}>대화를 들려주세요</p>
-                <p style={{ fontSize: 13 }} className="text-white/85">
+                <p className="text-ink" style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.4 }}>대화를 들려주세요</p>
+                <p className="text-gray" style={{ fontSize: 13 }}>
                   AI가 분석해 코칭해드릴게요.
                 </p>
               </div>
-              <motion.span whileTap={{ scale: 0.9 }} className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
-                <Plus size={26} className="text-sky-dark" strokeWidth={2.5} />
+              <motion.span
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#2BC4F0,#5FD6F7)" }}
+              >
+                <Plus size={26} className="text-white" strokeWidth={2.5} />
               </motion.span>
             </div>
           </SectionCard>
@@ -94,15 +131,19 @@ function StatCard({
   label,
   sub,
   accent,
+  onClick,
 }: {
   big: string;
   label: string;
   sub: string;
   accent?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <div
-      className="rounded-[18px] bg-white p-3 flex flex-col items-center text-center"
+    <motion.button
+      onClick={onClick}
+      whileTap={onClick ? { scale: 0.95 } : undefined}
+      className={`rounded-[18px] bg-white p-3 flex flex-col items-center text-center ${onClick ? "ring-1 ring-sky/30" : ""}`}
       style={{ boxShadow: "0 8px 24px rgba(20,40,60,0.06)" }}
     >
       <span style={{ fontSize: 22, fontWeight: 700 }} className={accent ? "text-sky" : "text-ink"}>
@@ -114,6 +155,6 @@ function StatCard({
       <span className="text-gray" style={{ fontSize: 11 }}>
         {sub}
       </span>
-    </div>
+    </motion.button>
   );
 }

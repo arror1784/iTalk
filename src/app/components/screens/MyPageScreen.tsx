@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronRight, Users, Bell, Crown, Headphones, Flame, BarChart3 } from "lucide-react";
+import { ChevronRight, Users, Bell, Crown, Headphones, Flame, BarChart3, BookMarked } from "lucide-react";
 import { AppHeader } from "../layout/AppHeader";
 import { FadeUp } from "../common/FadeUp";
 import { Switch } from "../ui/switch";
@@ -26,26 +26,11 @@ export function MyPageScreen() {
           </div>
         </FadeUp>
 
-        {/* 누적·스트릭 */}
-        <FadeUp delay={0.1} className="grid grid-cols-2 gap-3 mt-4">
-          <div className="bg-white rounded-2xl p-4 flex items-center gap-3" style={{ boxShadow: "0 8px 24px rgba(20,40,60,0.05)" }}>
-            <span className="w-11 h-11 rounded-full bg-sky-light flex items-center justify-center">
-              <BarChart3 size={20} className="text-sky-dark" />
-            </span>
-            <div>
-              <p className="text-ink" style={{ fontSize: 20, fontWeight: 700 }}>{myStats.totalAnalyze}회</p>
-              <p className="text-gray" style={{ fontSize: 12 }}>누적 분석</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl p-4 flex items-center gap-3" style={{ boxShadow: "0 8px 24px rgba(20,40,60,0.05)" }}>
-            <span className="w-11 h-11 rounded-full bg-[#fff0e8] flex items-center justify-center">
-              <Flame size={20} className="text-coral" />
-            </span>
-            <div>
-              <p className="text-ink" style={{ fontSize: 20, fontWeight: 700 }}>{myStats.streak}일</p>
-              <p className="text-gray" style={{ fontSize: 12 }}>연속 기록</p>
-            </div>
-          </div>
+        {/* 누적·스트릭·어휘 */}
+        <FadeUp delay={0.1} className="grid grid-cols-3 gap-3 mt-4">
+          <MiniStat icon={BarChart3} bg="bg-sky-light" color="text-sky-dark" value={`${myStats.totalAnalyze}`} unit="회" label="누적 분석" />
+          <MiniStat icon={Flame} bg="bg-[#fff0e8]" color="text-coral" value={`${myStats.streak}`} unit="일" label="연속 기록" />
+          <MiniStat icon={BookMarked} bg="bg-[#fff8df]" color="text-[#d99e00]" value={`${myStats.vocabCount}`} unit="개" label="모은 어휘" />
         </FadeUp>
 
         {/* 프리미엄 */}
@@ -79,6 +64,35 @@ export function MyPageScreen() {
           아이톡 v1.0.0
         </p>
       </div>
+    </div>
+  );
+}
+
+function MiniStat({
+  icon: Icon,
+  bg,
+  color,
+  value,
+  unit,
+  label,
+}: {
+  icon: typeof Users;
+  bg: string;
+  color: string;
+  value: string;
+  unit: string;
+  label: string;
+}) {
+  return (
+    <div className="bg-white rounded-2xl p-3 flex flex-col items-center text-center" style={{ boxShadow: "0 8px 24px rgba(20,40,60,0.05)" }}>
+      <span className={`w-10 h-10 rounded-full ${bg} flex items-center justify-center mb-1.5`}>
+        <Icon size={18} className={color} />
+      </span>
+      <p className="text-ink" style={{ fontSize: 18, fontWeight: 700 }}>
+        {value}
+        <span style={{ fontSize: 12 }}>{unit}</span>
+      </p>
+      <p className="text-gray" style={{ fontSize: 11 }}>{label}</p>
     </div>
   );
 }

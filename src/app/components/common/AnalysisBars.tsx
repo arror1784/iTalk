@@ -4,15 +4,23 @@ import { motion } from "motion/react";
 export function AnalysisBars({
   items,
 }: {
-  items: { label: string; value: number; color: string }[];
+  items: { label: string; value: number; color: string; highlight?: boolean }[];
 }) {
   return (
     <div className="flex flex-col gap-3">
       {items.map((item, i) => (
         <div key={item.label}>
-          <div className="flex justify-between mb-1.5">
-            <span style={{ fontSize: 14 }} className="text-ink">
+          <div className="flex justify-between mb-1.5 items-center">
+            <span
+              style={{ fontSize: 14, fontWeight: item.highlight ? 700 : 400 }}
+              className={item.highlight ? "text-sky-dark flex items-center gap-1" : "text-ink"}
+            >
               {item.label}
+              {item.highlight && (
+                <span className="px-1.5 py-0.5 rounded-full bg-sky-light" style={{ fontSize: 10, fontWeight: 700 }}>
+                  핵심
+                </span>
+              )}
             </span>
             <span style={{ fontSize: 14, fontWeight: 600 }} className="text-gray">
               {item.value}%

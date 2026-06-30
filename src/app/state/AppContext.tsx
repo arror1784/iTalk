@@ -11,10 +11,13 @@ export type Screen =
   | "report"
   | "coaching"
   | "lesson"
+  | "play"
+  | "story"
+  | "wordchain"
   | "reports"
   | "my";
 
-export type Tab = "home" | "coaching" | "reports" | "my";
+export type Tab = "home" | "coaching" | "play" | "my";
 export type RecordMode = "voice" | "text" | "upload";
 
 type State = {
@@ -43,7 +46,7 @@ const initialState: State = {
 export const TAB_SCREENS: Record<Tab, Screen> = {
   home: "home",
   coaching: "coaching",
-  reports: "reports",
+  play: "play",
   my: "my",
 };
 
@@ -85,8 +88,20 @@ type Ctx = {
 
 const AppContext = createContext<Ctx | null>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export function AppProvider({
+  children,
+  initialScreen,
+  initialTab,
+}: {
+  children: ReactNode;
+  initialScreen?: Screen;
+  initialTab?: Tab;
+}) {
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    ...(initialScreen ? { screen: initialScreen } : {}),
+    ...(initialTab ? { activeTab: initialTab } : {}),
+  });
   const value: Ctx = {
     state,
     go: (screen, tab) => dispatch({ type: "GO", screen, tab }),

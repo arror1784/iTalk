@@ -5,7 +5,7 @@ import { useApp } from "../../state/AppContext";
 import { AppHeader } from "../layout/AppHeader";
 import { FadeUp } from "../common/FadeUp";
 import { TrendChart } from "../common/TrendChart";
-import { trendWeekly, trendMonthly, itemChanges, reportHistory } from "../../state/dummyData";
+import { trendWeekly, trendMonthly, itemChanges, reportHistory, playHistory } from "../../state/dummyData";
 
 export function ReportsScreen() {
   const { go } = useApp();
@@ -13,7 +13,7 @@ export function ReportsScreen() {
 
   return (
     <div className="w-full h-full flex flex-col bg-bg-light">
-      <AppHeader title="리포트" />
+      <AppHeader title="성장 추이" showBack />
       <div className="flex-1 overflow-y-auto px-5 pb-32">
         {/* 토글 */}
         <FadeUp delay={0.02} className="flex justify-center mt-2 mb-4">
@@ -57,8 +57,22 @@ export function ReportsScreen() {
           </div>
         </FadeUp>
 
+        {/* 놀이 활동 누적 */}
+        <FadeUp delay={0.2} className="mt-6">
+          <p className="text-ink mb-3" style={{ fontSize: 16, fontWeight: 600 }}>놀이 활동</p>
+          <div className="grid grid-cols-3 gap-3">
+            {playHistory.map((p) => (
+              <div key={p.id} className="bg-white rounded-2xl p-3 flex flex-col items-center text-center" style={{ boxShadow: "0 8px 24px rgba(20,40,60,0.05)" }}>
+                <span style={{ fontSize: 20 }}>{p.emoji}</span>
+                <span className="text-ink mt-1" style={{ fontSize: 17, fontWeight: 700 }}>{p.value}</span>
+                <span className="text-gray" style={{ fontSize: 11 }}>{p.label}</span>
+              </div>
+            ))}
+          </div>
+        </FadeUp>
+
         {/* 분석 히스토리 */}
-        <FadeUp delay={0.24} className="mt-6">
+        <FadeUp delay={0.28} className="mt-6">
           <p className="text-ink mb-3" style={{ fontSize: 16, fontWeight: 600 }}>분석 히스토리</p>
           <div className="flex flex-col gap-2">
             {reportHistory.map((r) => (
